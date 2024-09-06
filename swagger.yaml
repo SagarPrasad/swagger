@@ -1,718 +1,2862 @@
----
-swagger: "2.0"
+openapi: 3.0.3
 info:
-  description: "This is a sample server Petstore server.  You can find out more about\
-    \ Swagger at [http://swagger.io](http://swagger.io) or on [irc.freenode.net, #swagger](http://swagger.io/irc/).\
-    \  For this sample, you can use the api key `special-key` to test the authorization\
-    \ filters."
-  version: "1.0.5"
-  title: "Swagger Petstore"
-  termsOfService: "http://swagger.io/terms/"
+  title: FRMS Order Manage APIs - OpenAPI 3.0
+  description: |-
+    This is a high level api for the creating and managing order for SCM in Herald Platform.
+
+    Some useful links:
+    - [FRMS git repository](https://github.com/swagger-api/swagger-petstore)
+    - [Sharepoint URL](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
   contact:
-    email: "apiteam@swagger.io"
+    email: apiteam@swagger.io
   license:
-    name: "Apache 2.0"
-    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
-basePath: "/v2"
-tags:
-- name: "pet"
-  description: "Everything about your Pets"
-  externalDocs:
-    description: "Find out more"
-    url: "http://swagger.io"
-- name: "store"
-  description: "Access to Petstore orders"
-- name: "user"
-  description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
-schemes:
-- "https"
-- "http"
-paths:
-  /pet/{petId}/uploadImage:
-    post:
-      tags:
-      - "pet"
-      summary: "uploads an image"
-      description: ""
-      operationId: "uploadFile"
-      consumes:
-      - "multipart/form-data"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to update"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "additionalMetadata"
-        in: "formData"
-        description: "Additional data to pass to server"
-        required: false
-        type: "string"
-      - name: "file"
-        in: "formData"
-        description: "file to upload"
-        required: false
-        type: "file"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/ApiResponse"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet:
-    post:
-      tags:
-      - "pet"
-      summary: "Add a new pet to the store"
-      description: ""
-      operationId: "addPet"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    put:
-      tags:
-      - "pet"
-      summary: "Update an existing pet"
-      description: ""
-      operationId: "updatePet"
-      consumes:
-      - "application/json"
-      - "application/xml"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/Pet"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-        405:
-          description: "Validation exception"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByStatus:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by status"
-      description: "Multiple status values can be provided with comma separated strings"
-      operationId: "findPetsByStatus"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "status"
-        in: "query"
-        description: "Status values that need to be considered for filter"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-          enum:
-          - "available"
-          - "pending"
-          - "sold"
-          default: "available"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid status value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /pet/findByTags:
-    get:
-      tags:
-      - "pet"
-      summary: "Finds Pets by tags"
-      description: "Multiple tags can be provided with comma separated strings. Use\
-        \ tag1, tag2, tag3 for testing."
-      operationId: "findPetsByTags"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "tags"
-        in: "query"
-        description: "Tags to filter by"
-        required: true
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "multi"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid tag value"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-      deprecated: true
-  /pet/{petId}:
-    get:
-      tags:
-      - "pet"
-      summary: "Find pet by ID"
-      description: "Returns a single pet"
-      operationId: "getPetById"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet to return"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Pet"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - api_key: []
-    post:
-      tags:
-      - "pet"
-      summary: "Updates a pet in the store with form data"
-      description: ""
-      operationId: "updatePetWithForm"
-      consumes:
-      - "application/x-www-form-urlencoded"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "petId"
-        in: "path"
-        description: "ID of pet that needs to be updated"
-        required: true
-        type: "integer"
-        format: "int64"
-      - name: "name"
-        in: "formData"
-        description: "Updated name of the pet"
-        required: false
-        type: "string"
-      - name: "status"
-        in: "formData"
-        description: "Updated status of the pet"
-        required: false
-        type: "string"
-      responses:
-        405:
-          description: "Invalid input"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-    delete:
-      tags:
-      - "pet"
-      summary: "Deletes a pet"
-      description: ""
-      operationId: "deletePet"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "api_key"
-        in: "header"
-        required: false
-        type: "string"
-      - name: "petId"
-        in: "path"
-        description: "Pet id to delete"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Pet not found"
-      security:
-      - petstore_auth:
-        - "write:pets"
-        - "read:pets"
-  /store/order:
-    post:
-      tags:
-      - "store"
-      summary: "Place an order for a pet"
-      description: ""
-      operationId: "placeOrder"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "order placed for purchasing the pet"
-        required: true
-        schema:
-          $ref: "#/definitions/Order"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid Order"
-  /store/order/{orderId}:
-    get:
-      tags:
-      - "store"
-      summary: "Find purchase order by ID"
-      description: "For valid response try integer IDs with value >= 1 and <= 10.\
-        \ Other values will generated exceptions"
-      operationId: "getOrderById"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of pet that needs to be fetched"
-        required: true
-        type: "integer"
-        maximum: 10
-        minimum: 1
-        format: "int64"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/Order"
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-    delete:
-      tags:
-      - "store"
-      summary: "Delete purchase order by ID"
-      description: "For valid response try integer IDs with positive integer value.\
-        \ Negative or non-integer values will generate API errors"
-      operationId: "deleteOrder"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "orderId"
-        in: "path"
-        description: "ID of the order that needs to be deleted"
-        required: true
-        type: "integer"
-        minimum: 1
-        format: "int64"
-      responses:
-        400:
-          description: "Invalid ID supplied"
-        404:
-          description: "Order not found"
-  /store/inventory:
-    get:
-      tags:
-      - "store"
-      summary: "Returns pet inventories by status"
-      description: "Returns a map of status codes to quantities"
-      operationId: "getInventory"
-      produces:
-      - "application/json"
-      parameters: []
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            type: "object"
-            additionalProperties:
-              type: "integer"
-              format: "int32"
-      security:
-      - api_key: []
-  /user/createWithArray:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithArrayInput"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/createWithList:
-    post:
-      tags:
-      - "user"
-      summary: "Creates list of users with given input array"
-      description: ""
-      operationId: "createUsersWithListInput"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "List of user object"
-        required: true
-        schema:
-          type: "array"
-          items:
-            $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-  /user/{username}:
-    get:
-      tags:
-      - "user"
-      summary: "Get user by user name"
-      description: ""
-      operationId: "getUserByName"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be fetched. Use user1 for testing. "
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/User"
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-    put:
-      tags:
-      - "user"
-      summary: "Updated user"
-      description: "This can only be done by the logged in user."
-      operationId: "updateUser"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "name that need to be updated"
-        required: true
-        type: "string"
-      - in: "body"
-        name: "body"
-        description: "Updated user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        400:
-          description: "Invalid user supplied"
-        404:
-          description: "User not found"
-    delete:
-      tags:
-      - "user"
-      summary: "Delete user"
-      description: "This can only be done by the logged in user."
-      operationId: "deleteUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "path"
-        description: "The name that needs to be deleted"
-        required: true
-        type: "string"
-      responses:
-        400:
-          description: "Invalid username supplied"
-        404:
-          description: "User not found"
-  /user/login:
-    get:
-      tags:
-      - "user"
-      summary: "Logs user into the system"
-      description: ""
-      operationId: "loginUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - name: "username"
-        in: "query"
-        description: "The user name for login"
-        required: true
-        type: "string"
-      - name: "password"
-        in: "query"
-        description: "The password for login in clear text"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "successful operation"
-          headers:
-            X-Expires-After:
-              type: "string"
-              format: "date-time"
-              description: "date in UTC when token expires"
-            X-Rate-Limit:
-              type: "integer"
-              format: "int32"
-              description: "calls per hour allowed by the user"
-          schema:
-            type: "string"
-        400:
-          description: "Invalid username/password supplied"
-  /user/logout:
-    get:
-      tags:
-      - "user"
-      summary: "Logs out current logged in user session"
-      description: ""
-      operationId: "logoutUser"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters: []
-      responses:
-        default:
-          description: "successful operation"
-  /user:
-    post:
-      tags:
-      - "user"
-      summary: "Create user"
-      description: "This can only be done by the logged in user."
-      operationId: "createUser"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      - "application/xml"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "Created user object"
-        required: true
-        schema:
-          $ref: "#/definitions/User"
-      responses:
-        default:
-          description: "successful operation"
-securityDefinitions:
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "https://petstore.swagger.io/oauth/authorize"
-    flow: "implicit"
-    scopes:
-      read:pets: "read your pets"
-      write:pets: "modify pets in your account"
-definitions:
-  ApiResponse:
-    type: "object"
-    properties:
-      code:
-        type: "integer"
-        format: "int32"
-      type:
-        type: "string"
-      message:
-        type: "string"
-  Category:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Category"
-  Pet:
-    type: "object"
-    required:
-    - "name"
-    - "photoUrls"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      category:
-        $ref: "#/definitions/Category"
-      name:
-        type: "string"
-        example: "doggie"
-      photoUrls:
-        type: "array"
-        xml:
-          wrapped: true
-        items:
-          type: "string"
-          xml:
-            name: "photoUrl"
-      tags:
-        type: "array"
-        xml:
-          wrapped: true
-        items:
-          xml:
-            name: "tag"
-          $ref: "#/definitions/Tag"
-      status:
-        type: "string"
-        description: "pet status in the store"
-        enum:
-        - "available"
-        - "pending"
-        - "sold"
-    xml:
-      name: "Pet"
-  Tag:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
-        type: "string"
-    xml:
-      name: "Tag"
-  Order:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      petId:
-        type: "integer"
-        format: "int64"
-      quantity:
-        type: "integer"
-        format: "int32"
-      shipDate:
-        type: "string"
-        format: "date-time"
-      status:
-        type: "string"
-        description: "Order Status"
-        enum:
-        - "placed"
-        - "approved"
-        - "delivered"
-      complete:
-        type: "boolean"
-    xml:
-      name: "Order"
-  User:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-        format: "int64"
-      username:
-        type: "string"
-      firstName:
-        type: "string"
-      lastName:
-        type: "string"
-      email:
-        type: "string"
-      password:
-        type: "string"
-      phone:
-        type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
-    xml:
-      name: "User"
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
 externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://api.jioscm-uat.jio.com
+- url: https://api.jioscm-rep.jio.com
+tags:
+- name: FRMS
+  description: Everything about your SCM Orders
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+paths:
+  /common-login-service/login:
+    post:
+      tags:
+      - Auth Service
+      summary: "Platform team will create the user and onboard for different service\
+        \ like WB, FYND etc"
+      description: Creating Token to make FRMS API calls
+      operationId: createToken
+      requestBody:
+        description: Creating Token to make FRMS API calls
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/commonloginservice_login_body'
+        required: true
+      responses:
+        "200":
+          description: order is accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                status: SUCCESS
+                result:
+                  accessToken: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJjbHNJZCI6MzY2LCJzdWIiOiJDTFNfVVNFUiIsImxvZ2luVHlwZSI6IkJBQ0tFTkQiLCJpc3MiOiJjb21tb24tbG9naW4tc2VydmljZSIsInNlc3Npb25faWQiOiIwOTY1NjQxNzE1MTU3NDE4MTg4IiwicHJlZmVycmVkX3VzZXJuYW1lIjoib21zX3VzZXIiLCJ1c2VyVHlwZSI6IlNWQyIsInR5cGUiOiJCZWFyZXIgIiwiZXhwIjoxNzE1MTc5MDE4LCJpYXQiOjE3MTUxNTc0MTgsImlzX21hc3Rlcl9hZG1pbiI6ZmFsc2V9.4Q5dsd2LqmK8S5iWwKLmBNND8AvRX7Qo2uLTfudT87M
+                  expiresAt: 2024-05-08 20:06:58
+                  refreshToken: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDTFNfVVNFUiIsImlzcyI6ImNvbW1vbi1sb2dpbi1zZXJ2aWNlIiwic2Vzc2lvbl9pZCI6IjA5NjU2NDE3MTUxNTc0MTgxODgiLCJ0eXBlIjoicmVmcmVzaCIsImV4cCI6MTcxNTIwMDY3OCwiaWF0IjoxNzE1MTU3NDE4fQ.U6GU2fDq1OuWCiXt5MZ_C9kKFJVSbpuTFECsCekk0bA
+                  refreshExpiresAt: 2024-05-09 02:07:58
+        "400":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: FAIL
+                errors:
+                - errorCode: "400.002"
+                  errorDescription: User oms_users not found
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: FAIL
+                errors:
+                - errorCode: "401"
+                  errorDescription: "Unauthorized Exception : Wrong Password | Attempt\
+                    \ remaining: 3"
+  /frms/v1/orders:
+    get:
+      tags:
+      - Order
+      summary: Get Order By Conditions
+      description: GerOrder List By different Conditions
+      operationId: getOrderList
+      parameters:
+      - name: status
+        in: query
+        description: Order Status on which it needs to be filtered (and condition)
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: INVOICED
+      - name: since
+        in: query
+        description: default will be last 24 hours
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 24h
+      - name: orderType
+        in: query
+        description: Pass different orderType
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: SALES
+      - name: orderSubType
+        in: query
+        description: Pass different orderSubType
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: EXCHANGE
+      - name: orderDate
+        in: query
+        description: Order Date
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: 2022-10-13T15:49:18+05:30
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Basic Order Details with Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Orders'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+    post:
+      tags:
+      - Order
+      summary: Creating Different Types of Order
+      description: Create Different Types of Order Like Sales Order/ Purchase Order
+      operationId: createOrder
+      parameters:
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      requestBody:
+        description: Creation of an order in json
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: true
+      responses:
+        "201":
+          description: order is accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreateResponse'
+        "400":
+          description: Mandatory field Missing
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/status:
+    post:
+      tags:
+      - Order
+      summary: Updating the status ( Order / Shipment)
+      description: Update the order status at different level
+      operationId: statusUpdate
+      parameters:
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      requestBody:
+        description: Creation of an order in json
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusUpdate'
+        required: true
+      responses:
+        "201":
+          description: order is accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        "400":
+          description: Mandatory field Missing
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}/cancel:
+    post:
+      tags:
+      - Order
+      summary: Cancellation of order lines ( Order / Shipment)
+      description: cancellation of order lines
+      operationId: cancelOrderLines
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      requestBody:
+        description: Cancel Order Line Request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancellationRequest'
+        required: true
+      responses:
+        "201":
+          description: order is accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        "400":
+          description: Mandatory field Missing
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}:
+    get:
+      tags:
+      - Order
+      summary: Get Order
+      description: Create Different Types of Order Like Sales Order/ Purchase Order
+      operationId: getOrder
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Basic Order Details with Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+    put:
+      tags:
+      - Order
+      summary: Update Order with MOP or Address
+      description: Allow api to update MOP / address till certain status
+      operationId: updateOrder
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      requestBody:
+        description: Creation of an order in json
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+        required: true
+      responses:
+        "201":
+          description: order is accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreateResponse'
+        "400":
+          description: Mandatory field Missing
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}/status:
+    get:
+      tags:
+      - Order
+      summary: Get Order Status
+      description: Get Order Status
+      operationId: getOrderStatus
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Basic Order Details with Status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}/orderline/{orderLine}/status:
+    get:
+      tags:
+      - Order
+      summary: Get Order Line Status (OSM)
+      description: Get Order Line Status
+      operationId: getOrderLineStatus
+      parameters:
+      - name: orderLine
+        in: path
+        description: Order Line number (primeline)
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Basic Order Details with Status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderLine'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}/shipments:
+    get:
+      tags:
+      - Shipment
+      summary: Get Order Shipments
+      description: Create Different Types of Order Like Sales Order/ Purchase Order
+      operationId: getOrderShipments
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Returns the array of shipment against order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meta'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+    post:
+      tags:
+      - Shipment
+      summary: Create Shipments for Order
+      description: Create Shipments for the order
+      operationId: createOrderShipment
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      requestBody:
+        description: Cancel Order Line Request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Shipment'
+        required: true
+      responses:
+        "200":
+          description: Success if the shipment is created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}/shipments/{shipmentNo}:
+    get:
+      tags:
+      - Shipment
+      summary: Get Shipment
+      description: Create Different Types of Order Like Sales Order/ Purchase Order
+      operationId: getOrderShipment
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: shipmentNo
+        in: path
+        description: Shipment Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Returns the array of shipment against order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meta'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}/shipments/{shipmentNo}/status:
+    get:
+      tags:
+      - Shipment
+      summary: Get Shipment Staus
+      description: Create Different Types of Order Like Sales Order/ Purchase Order
+      operationId: getOrderShipmentStatus
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: shipmentNo
+        in: path
+        description: Shipment Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Returns the array of shipment against order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}/shipments/{shipmentNo}/invoice:
+    get:
+      tags:
+      - Shipment
+      summary: Get Shipment Invoice
+      description: get the shipment invoice
+      operationId: getShipmentInvoice
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: shipmentNo
+        in: path
+        description: Shipment Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Returns the array of shipment against order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Meta'
+        "404":
+          description: Order Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /frms/v1/orders/{orderNo}/shipments/{shipmentNo}/document:
+    get:
+      tags:
+      - Shipment
+      summary: Get Shipment Invoice Or Shipping Label
+      description: get the shipment invoice or shippinglabel document
+      operationId: getShipmentDocument
+      parameters:
+      - name: orderNo
+        in: path
+        description: Order Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: shipmentNo
+        in: path
+        description: Shipment Number to be fetched
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: docType
+        in: query
+        description: Shipment Number to be fetched
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: invoice or shippinglabel
+      - name: base64encode
+        in: query
+        description: output in base64encoded or bytes
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: default value is true
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIO
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      - name: source
+        in: header
+        description: source system
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: FS
+      - name: request-id
+        in: header
+        description: any unique request id
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: some-uuid
+      responses:
+        "200":
+          description: Returns the array of shipment against order
+          content:
+            application/json:
+              schema:
+                type: string
+                example: sasdasdasd==
+        "404":
+          description: Order or Shipment Doesn't Exists
+          content:
+            applicaton/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+      - OAuth2:
+        - read the token from auth service
+components:
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          $ref: '#/components/schemas/AuthResult'
+    AuthResult:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        expiresAt:
+          type: string
+        refreshToken:
+          type: string
+        refreshExpiresAt:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    OrderCreateResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - ACCEPTED
+          - PROCESSING
+          - PLACED
+          - DELIVERED
+          - CANCELLED
+          - PARTIALLY DELIVERED
+          - HOLD
+        orderNo:
+          type: string
+          description: Customer Order Number or Purchase Order Number
+          example: FNA1300005611
+        orderId:
+          type: string
+          description: FRMS Order unique id
+          format: uuid
+    Address:
+      type: object
+      properties:
+        addressId:
+          type: string
+          description: Address Id
+          format: uuid
+        externalAddressId:
+          type: string
+          description: External address Id
+          example: 9200c1a7-8b5a-41ce-8def-096de055db3a
+        addressType:
+          type: string
+          description: Address type
+          example: BillTo
+        address1:
+          type: string
+          xml:
+            attribute: true
+        address2:
+          type: string
+          xml:
+            attribute: true
+        address3:
+          type: string
+          xml:
+            attribute: true
+        address4:
+          type: string
+          xml:
+            attribute: true
+        address5:
+          type: string
+          xml:
+            attribute: true
+        address6:
+          type: string
+          xml:
+            attribute: true
+        city:
+          type: string
+          xml:
+            attribute: true
+        company:
+          type: string
+          xml:
+            attribute: true
+        country:
+          type: string
+          xml:
+            attribute: true
+        zone:
+          type: string
+          xml:
+            attribute: true
+        state:
+          type: string
+          xml:
+            attribute: true
+        stateCode:
+          type: string
+          xml:
+            attribute: true
+        zipCode:
+          type: string
+          xml:
+            attribute: true
+        firstName:
+          type: string
+          xml:
+            attribute: true
+        lastName:
+          type: string
+          xml:
+            attribute: true
+        middleName:
+          type: string
+          xml:
+            attribute: true
+        commercialAddress:
+          type: boolean
+          description: Is it a commercial Address?
+          example: false
+        alternateContact:
+          type: string
+          example: "9414100962"
+          xml:
+            attribute: true
+        mobileNo:
+          type: string
+          example: "9414100962"
+          xml:
+            attribute: true
+        gstin:
+          type: string
+          example: AKBTT01283N
+          xml:
+            attribute: true
+        panNo:
+          type: string
+          description: pan card
+          example: AURPP02384N
+          xml:
+            attribute: true
+        tanNo:
+          type: string
+          description: pan card
+          example: AURPP02384N
+          xml:
+            attribute: true
+        fssai:
+          type: string
+          description: fssai
+          example: QWERTYUIO
+          xml:
+            attribute: true
+        gstClassification:
+          type: string
+          description: GST Classification
+          example: unregistered
+          xml:
+            attribute: true
+        gstTradeName:
+          type: string
+          description: GST Trade name
+          example: TEST MID 55042675
+          xml:
+            attribute: true
+        merchantId:
+          type: string
+          description: Merchant Id
+          example: "100002000065692"
+          xml:
+            attribute: true
+        emailId:
+          type: string
+          xml:
+            attribute: true
+        location:
+          $ref: '#/components/schemas/Address_location'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Error:
+      type: object
+      properties:
+        errorCode:
+          type: string
+          example: FFL201
+        errorMessage:
+          type: string
+          example: Item ShortPicked - Itm1001
+        traceId:
+          type: string
+          example: b3-asda031
+        errorDetails:
+          type: object
+          example: Stack Trace or error list
+        timestamp:
+          type: string
+          format: date-time
+        meta:
+          $ref: '#/components/schemas/Meta'
+    FulfillmentDate:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Order Date/Estimated Delivery Date/Promised Ship Date/Revised
+            Ship Date/Promised Delivery Date/Revised Promised Delivery Date/Hold Till
+            Date/Estimated Refund Date/Revised Estimated Refund Date/Promised Pickup
+            Date/Revised Promised Pickup Date
+          example: promiseShipDate
+        value:
+          type: string
+          description: value of datetype
+          example: 2022-10-13T15:49:18+05:30
+        reason:
+          type: string
+          description: date reason
+          example: Some Sample
+        meta:
+          $ref: '#/components/schemas/Meta'
+      description: Dates
+    OrderFee:
+      type: object
+      properties:
+        name:
+          type: string
+          description: |
+            The type of order fee. Possible values include: * `deliveryFee` * `codFee` * `platformFee` * `priorityFee` * `returnFee`
+          example: deliveryFee
+        enabled:
+          type: boolean
+          example: true
+        value:
+          type: number
+          description: Delivery Fee value
+          example: 30
+        meta:
+          $ref: '#/components/schemas/Meta'
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique id to represent the Order request
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174000
+        externalOrderNo:
+          type: string
+          description: Order Number from Source system
+          example: "10842349428349"
+        customerId:
+          type: string
+          description: Unique ID to represent Customer
+          example: 123e4567-e89b-12d3-a456-426614174000
+        orderNo:
+          type: string
+          description: Customer Order Number or Purchase Order Number
+          example: FNA1300005611
+        refOrderNo:
+          type: string
+          description: Referenced Order No
+          example: FNA1300005612
+        refOrderType:
+          type: string
+          description: Referenced Order Type
+          example: ForwardOrder
+        refShipmentNo:
+          type: string
+          description: Referenced Shipment No
+          example: "10231920321"
+        refShipmentType:
+          type: string
+          description: Referenced Shipment Type
+          example: ForwardShipment
+        orderDate:
+          type: string
+          description: Created Order Date captured by source system
+          example: 2022-12-09T10:37:31.453+05:30
+        orderType:
+          type: string
+          description: |
+            Order Type. Examples include: `SALES`, `PO`, etc.
+          example: SALES
+        orderSubType:
+          type: string
+          description: |
+            The sub order type. Examples include: `FORWARD`, `RETURN`, `EXCHANGE`, etc.
+          example: FORWARD
+        returnType:
+          type: string
+          description: |
+            The return order type. Examples include: `RTO`, `RVP`, `SelfShip`, etc.
+          example: RVP
+        returnOption:
+          type: string
+          description: |
+            The option for return. Examples include: `DSR`, `NONDSR`, etc.
+          example: NONDSR
+        orderTotalAmount:
+          type: number
+          description: Order Total Amount
+          example: 2024.58
+        cartId:
+          type: string
+          description: Cart ID
+          example: 123e4567-e89b-12d3-a456-426614174000
+        parentOrderNo:
+          type: string
+          description: for Return orders only
+          example: FNA9400005418
+        enterpriseCode:
+          type: string
+          description: enterprise description
+          example: FnL
+        sellerOrganizationCode:
+          type: string
+          description: Seller Organization code
+          example: FnL
+        parentEnterpriseCode:
+          type: string
+          description: For return orders only
+          example: FnL
+        channel:
+          type: string
+          description: |
+            The sales channel where the order originated.  Examples include: `AJIOAPP`, `ZIVAME`, `AJIOWEB`, etc.
+          example: AJIOAPP
+        subChannel:
+          type: string
+          description: sales sub channel for the order
+          example: yet to be decided
+        device:
+          type: string
+          description: |
+            Device from which order is taken. Examples include: `iPhone`, `Android`, etc.
+          example: iPhone
+        allocationRuleId:
+          type: string
+          description: Allocation Rule ID
+          example: SCH_Fnl
+        authorizedClient:
+          type: string
+          description: Authorized Client
+          example: Hybris
+        tenantId:
+          type: string
+          description: |
+            Tenant for this order. Examples include: `AJIOB2C`, `AJIOB2B`, `JIOMART`, etc.
+          example: AJIOB2C
+        subTenant:
+          type: string
+          description: subtenant for this order
+          example: FnL
+        entryType:
+          type: string
+          description: Source channel of the order
+          example: AK footwear
+        createAt:
+          type: string
+          description: date of order creation
+          example: 2022-12-09T10:37:31.453+05:30
+        createdBy:
+          type: string
+          description: source identifier of the order
+          example: createorder
+        voucherCode:
+          type: string
+          description: Voucher Code used for Gift Vouchers.
+          example: RIL20
+        paymentMode:
+          type: string
+          description: payment type of the order
+          example: NONCOD
+        paymentRuleId:
+          type: string
+          description: Payment Rule ID
+          example: PAY_RULE_FnL
+        termsCode:
+          type: string
+          description: Terms Code for Returns order
+          example: storeCredit
+        site:
+          type: string
+          description: Site related to PO order
+        warehouse:
+          type: string
+          description: warehouse related to PO order
+        plant:
+          type: string
+          description: Plant related to PO order
+        purchasingGroup:
+          type: string
+          description: PurchasingGroup related to PO order
+        priceListConfiguration:
+          type: string
+          description: Price List Configuration related to PO order
+        purchasingReferenceId:
+          type: string
+          description: Purchasing Reference id related to PO order
+        costCenter:
+          type: string
+          description: Cost Center related to PO order
+        clientId:
+          type: string
+          description: client Id (po related)
+        vendorSKUCode:
+          type: string
+          description: Vendor SKU Code related to PO order
+        fulfillmentSystem:
+          type: string
+          description: |
+            Fulfillment System used for this order.  Examples include: `Sterling`, `FS`, etc.
+          example: FS
+        priorityCode:
+          type: integer
+          format: int32
+        prebookOrderEvent:
+          type: string
+          description: whether it is prebook event order
+          example: DIWALI
+        status:
+          type: string
+          description: Status of the order
+          example: SHIPMENT_CREATED
+        minStatus:
+          type: string
+          description: Status of the order
+          example: PARTIAL_SHIPMENT_CREATED
+        maxStatus:
+          type: string
+          description: Status of the order
+          example: PARTIAL_SHIPMENT_CREATED
+        meta:
+          $ref: '#/components/schemas/Meta'
+        buyer:
+          $ref: '#/components/schemas/Party'
+        seller:
+          $ref: '#/components/schemas/Party'
+        orderLines:
+          type: array
+          description: Array of all order lines
+          items:
+            $ref: '#/components/schemas/OrderLine'
+        orderFees:
+          type: array
+          description: Array of all order fees
+          items:
+            $ref: '#/components/schemas/OrderFee'
+        orderPaymentMethods:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderPaymentMethod'
+        orderStatusAudits:
+          type: array
+          description: Array of all order lines
+          items:
+            $ref: '#/components/schemas/StatusAudit'
+    OrderLineCharge:
+      type: object
+      properties:
+        amountType:
+          type: string
+          description: Type of Amount
+          example: Charge
+        amount:
+          type: number
+          description: discount amount
+          example: 1.29
+        name:
+          type: string
+          description: name of the charge
+          example: VoucherDiscount
+        category:
+          type: string
+          description: category of the charge
+          example: Shipping/Promotion/SELLER_PROMO
+        type:
+          type: string
+          description: Charge Name
+          example: Shipping
+        perLine:
+          type: number
+          description: charge per line
+          example: 10.02
+        perUnit:
+          type: number
+          description: charge per unit
+          example: 13.9
+        roundOffAmount:
+          type: number
+          description: roundoff amount
+          example: -0.02
+        billable:
+          type: boolean
+          description: is Billable
+          example: true
+        discount:
+          type: boolean
+          description: is Discount
+          example: true
+        manual:
+          type: boolean
+          description: is Manual(Over and above other Promotion/Discount; input required
+            as part of order processing)
+          example: true
+        shippingCharge:
+          type: boolean
+          description: is Shipping Charge
+          example: true
+        meta:
+          $ref: '#/components/schemas/Meta'
+    OrderLineTax:
+      type: object
+      properties:
+        amountType:
+          type: string
+          description: Type of amount
+          example: Tax
+        category:
+          type: string
+          description: Category
+          example: Price/Shipping
+        type:
+          type: string
+          description: Tax Type like CGST/SGST/IGST/CESS/VAT
+          example: CGST
+        amount:
+          type: number
+          description: Tax Amount
+          example: 20
+        percentage:
+          type: number
+          description: Tax Percentage
+          example: 12
+        meta:
+          $ref: '#/components/schemas/Meta'
+    OrderLineItemDetail:
+      type: object
+      properties:
+        itemId:
+          type: string
+          example: "460001938003"
+        sellerSkuId:
+          type: string
+          description: Seller SKU ID
+          example: B2C_JIT_0709_S5_99
+        commercialType:
+          type: string
+          description: Commercial Type
+          example: SOR
+        description:
+          type: string
+          example: someItemDesc
+        displayItemDescription:
+          type: string
+          description: Display Item description
+          example: Park men jeans amber m
+        shortDescription:
+          type: string
+          description: Short Description
+          example: Park men jeans
+        itemGroupCode:
+          type: string
+          description: Item Group Code
+          example: PROD
+        componentCount:
+          type: integer
+          description: no of components
+          format: int32
+          example: 1
+        catalogName:
+          type: string
+          description: Catalog Name
+          example: luxuryProductCatalog
+        itemClass:
+          type: string
+          description: Item class
+          example: GOOD
+        expiryDate:
+          type: string
+          description: Item Expiry Date
+          example: 2022-12-09T10:37:31.453+05:30
+        uom:
+          type: string
+          description: Unit of Measure
+          example: EACH
+        colorCode:
+          type: string
+          description: colour of the Item
+          example: Graphite Grey
+        productLine:
+          type: string
+          description: product line of the Item
+          example: "830904002"
+        eanNo:
+          type: string
+          description: The ECCN number of an item(ean number).
+          example: "2050000430770"
+        sellerEanNo:
+          type: string
+          description: Seller ECCN number of an item(ean number).
+          example: "2050000430770"
+        eccnNo:
+          type: string
+          description: The ECCN number of an item(ean number).
+          example: "2050000430770"
+        brandName:
+          type: string
+          example: Apple
+        brandSizeCode:
+          type: string
+          example: M
+        hsnCode:
+          type: string
+          description: Tax product Code of an item(HSN Code)
+          example: "61041300"
+        taxProductCode:
+          type: string
+          description: Tax product Code of an item
+          example: "61041300"
+        reportingHsnCode:
+          type: string
+          description: Reporting HSNCode of an item
+          example: "61041300"
+        segment:
+          type: string
+          description: Segement of the Item
+          example: Men
+        itemSize:
+          type: string
+          description: Size of the Item
+          example: OS
+        manufactureName:
+          type: string
+          description: Manufacture Name -Source OMS
+          example: ManufactureName
+        imageUrl:
+          type: string
+          description: Image URL -Source OMS
+          example: Image URL
+        pdpImageUrl:
+          type: string
+          description: PDP Image URL -Source OMS
+          example: Image URL
+        imageThumbnailUrl:
+          type: string
+          description: PDP Image URL -Source OMS
+          example: Image URL
+        fashionGrade:
+          type: string
+          description: Fashion Grade
+          example: "2"
+        unitVolumetricWeight:
+          type: number
+          description: Unit Volumetric Weight
+          example: 1750
+        brickCode:
+          type: string
+          description: Brick code
+          example: "830201001"
+        organizationCode:
+          type: string
+          description: organizationCode -Source OMS
+          example: organizationCode
+        itemCategory:
+          type: string
+          description: Item Category
+        priceListConfig:
+          type: string
+          description: Price List Configuration
+        season:
+          type: string
+          description: Season
+        qcRequirement:
+          type: boolean
+          description: QC Requirement
+          example: true
+        qcType:
+          type: string
+          description: QC type
+          example: Sample/All
+        samplingRatio:
+          type: string
+          description: Sampling Ratio
+          example: 1:10 or 1:20 or
+        countryOfOrigin:
+          type: string
+          description: Country of Origin
+          example: IN
+        noOfSecondarySerials:
+          type: integer
+          description: Secondary serials
+          format: int32
+          example: 0
+        itemType:
+          type: string
+          description: |
+            Item Type. Examples include: `Consumable`, `Sellable`, `Luxary`, etc.
+          example: Luxury
+        dimension:
+          $ref: '#/components/schemas/ItemDimension'
+        flag:
+          $ref: '#/components/schemas/ItemFlag'
+        meta:
+          $ref: '#/components/schemas/Meta'
+    ItemFlag:
+      type: object
+      properties:
+        batteryBased:
+          type: boolean
+          description: Battery Base Flag
+          example: true
+        restricted:
+          type: boolean
+          description: Restricted Flag
+          example: true
+        secured:
+          type: boolean
+          description: Secure Flag
+          example: true
+        fragile:
+          type: boolean
+          description: Fragile Flag
+          example: true
+        luxury:
+          type: boolean
+          description: Luxury Flag
+          example: true
+        mto:
+          type: boolean
+          description: MTO Flag
+          example: true
+        multiPartShipment:
+          type: boolean
+          description: Multi-part Shipment  Flag
+          example: true
+        heavy:
+          type: boolean
+          description: Heavy Flag
+          example: true
+        bulky:
+          type: boolean
+          description: Bulky Flag
+          example: true
+        priorityDelivery:
+          type: boolean
+          description: Priority Delivery Flag
+          example: true
+        grabAndGo:
+          type: boolean
+          description: Grab and Go Flag
+          example: true
+        "3Pl":
+          type: boolean
+          description: is 3P Flag
+          example: true
+        returnable:
+          type: boolean
+          description: is Returnable
+          example: true
+        taxable:
+          type: boolean
+          description: is Taxable
+          example: true
+        digitalProduct:
+          type: boolean
+          description: is Digital Product
+          example: true
+        gift:
+          type: boolean
+          description: is Gift
+          example: true
+        giftWrapAllowed:
+          type: boolean
+          description: Is Gift Wrap Allowed?
+          example: true
+        serialized:
+          type: boolean
+          description: Is it Serialized?
+          example: true
+    ItemDimension:
+      type: object
+      properties:
+        height:
+          type: number
+          description: height of the Item
+          example: 2.16
+        heightUom:
+          type: string
+          description: Height Unit of measure
+          example: CM
+        length:
+          type: number
+          description: length of the Item
+          example: 35.1
+        lengthUom:
+          type: string
+          description: Length Unit of measure
+          example: CM
+        width:
+          type: number
+          description: Width of the Item
+          example: 35.1
+        widthUom:
+          type: string
+          description: Width Unit of measure
+          example: CM
+        volume:
+          type: number
+          description: Volume of the Item
+          example: 35.1
+        volumeUom:
+          type: string
+          description: Width Unit of measure
+          example: CUCENTIMETER
+        weight:
+          type: number
+          description: Volume of the Item
+          example: 35.1
+        weightUom:
+          type: string
+          description: Width Unit of measure
+          example: GRAM
+        sizeCode:
+          type: string
+          description: size code of the Item
+          example: FreeSize
+        sizeFormat:
+          type: string
+          description: size Format of the Item
+          example: US
+    OrderLinePaymentReference:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Amount
+          example: 150.79
+        mop:
+          type: string
+          description: MOP Type
+          example: RELIANCE_ONE
+        includedInLineTotal:
+          type: integer
+          description: Included Amount in the line total
+        meta:
+          $ref: '#/components/schemas/Meta'
+    OrderLinePrice:
+      type: object
+      properties:
+        mrp:
+          type: number
+          description: Max Retail Price
+          example: 100.51
+        retailPrice:
+          type: number
+          description: Max Retail Price
+          example: 100.51
+        itemPrice:
+          type: number
+          description: Item Price for Purchase Order
+          example: 100.51
+        unitPrice:
+          type: number
+          description: Unit Price With Tax
+          example: 100.51
+        listPrice:
+          type: number
+          description: List Price With Tax
+          example: 100.51
+        listPriceWithoutTax:
+          type: number
+          description: List Price Without Tax
+          example: 100.51
+        listPriceTax:
+          type: number
+          description: List Price Tax
+          example: 56.89
+        unitPriceWithoutTax:
+          type: number
+          description: Unit Price Without Tax
+          example: 100.51
+        unitPriceTax:
+          type: number
+          description: unit Price Tax
+          example: 56.89
+        priceInclusiveOfTax:
+          type: boolean
+          description: is Price inclusive of Tax
+          example: true
+        componentUnitPrice:
+          type: number
+          description: individual component price
+          example: 5.89
+    OrderLineReservation:
+      type: object
+      properties:
+        nodeId:
+          type: string
+          description: Node id
+          example: S108
+        nodeType:
+          type: string
+          description: Node type
+          example: DC
+        cdcNode:
+          type: string
+          description: cdc node
+          example: "8044"
+        nodeBusiness:
+          type: string
+          description: Node Business
+        hobId:
+          type: string
+          description: HOB ID
+        quantity:
+          type: number
+          description: Reserved Qty
+          example: 7
+        reservationId:
+          type: string
+          description: Reservation Id
+          example: 133bfe33-6ced-4e61-99c2-fd177e2b5f40
+        date:
+          type: string
+          description: date of reservation
+          example: 2022-12-09T10:37:31.453+05:30
+        preferredPickupTime:
+          type: string
+          description: Preferred Pickup Time
+        preferredDeliveryTime:
+          type: string
+          description: Preferred Delivery Time
+        pickupFromStore:
+          type: boolean
+          description: Pick From Store
+          example: true
+        dropAtStore:
+          type: boolean
+          description: Drop At Store
+          example: true
+        meta:
+          $ref: '#/components/schemas/Meta'
+      description: Contains the reservation details or delivery plan
+    OrderLine:
+      type: object
+      properties:
+        id:
+          type: string
+          description: unqiue id for the orderline
+          format: uuid
+        primeLineNo:
+          type: integer
+          description: Line Number of the order
+          format: int32
+          example: 1
+        subLineNo:
+          type: integer
+          description: Line Number of the order
+          format: int32
+          example: 1
+        lineType:
+          type: string
+          description: Line type
+          example: Product/Service/Adjustments
+        shipmentQuantity:
+          type: integer
+          description: Shipment Quantity
+          format: int32
+        pendingQuantity:
+          type: integer
+          description: Pending Quantity
+          format: int32
+        cancelledQuantity:
+          type: integer
+          description: Cancelled Quantity
+          format: int32
+        originalOrderedQuantity:
+          type: integer
+          description: Original Ordered Quantity
+          format: int32
+        orderedQuantity:
+          type: integer
+          description: Ordered Quantity
+          format: int32
+        invoicedQuantity:
+          type: integer
+          description: Invoiced Quantity
+          format: int32
+        componentQuantity:
+          type: integer
+          description: Component Quantity (Ratio Pack )
+          format: int32
+        carrierServiceCode:
+          type: string
+          description: carrier service code
+          example: SURFACE
+        carrierAccountNo:
+          type: string
+          description: Represents carrier account No
+          example: "8765432109"
+        scac:
+          type: string
+          description: carrier code
+          example: DELHIVERY
+        fulfillmentType:
+          type: string
+          description: Fulfillment Node Type
+          example: FnL_SHIP
+        deliveryMethod:
+          type: string
+          description: Delivery Method
+          example: SHP
+        shipmentMethod:
+          type: string
+          description: Shipment Method
+          example: SURFACE
+        itemId:
+          type: string
+          description: Item ID
+          example: "460407274003"
+        returnItemId:
+          type: string
+          description: Return Item ID
+          example: "460407274004"
+        departmentCode:
+          type: string
+          description: Department Code
+          example: "460407274003"
+        giftWrap:
+          type: boolean
+          description: gift wrap
+          example: false
+        promotionTender:
+          type: string
+          description: Promotion tender
+          example: "910234"
+        productClass:
+          type: string
+          description: product class
+          example: GOOD
+        returnReason:
+          type: string
+          description: Reason for Return
+          example: Order By Mistake
+        returnSubReason:
+          type: string
+          description: Sub Reason for Return
+          example: Order By Mistake
+        batchId:
+          type: string
+          description: Batch Id
+        lineStatus:
+          type: string
+          description: status of the line
+          example: CREATED
+        productLine:
+          type: string
+          description: Product line
+          example: "830201001"
+        shipmentId:
+          type: string
+          description: FS Shipping ID
+          example: FS10012345512
+        externalShipmentId:
+          type: string
+          description: Fynd/Zivame Shipping ID
+          example: uuid-uuid-uuid
+        shippingInstruction:
+          type: string
+          description: Shipping Instruction
+          example: handle with care
+        parentLineReference:
+          type: string
+          description: Parent Line Reference Id (SKU/PrimeLineId/or any reference
+            in case of GWP)
+          example: "2"
+        comment:
+          type: string
+          description: Comment
+          example: qwertyuiop
+        orderLinePrice:
+          $ref: '#/components/schemas/OrderLinePrice'
+        orderLineCharges:
+          type: array
+          description: Array of all associated line level taxes
+          items:
+            $ref: '#/components/schemas/OrderLineCharge'
+        orderLineTaxes:
+          type: array
+          description: Array of all associated line level taxes
+          items:
+            $ref: '#/components/schemas/OrderLineTax'
+        orderLinePaymentReferences:
+          type: array
+          description: Array of all associated payment
+          items:
+            $ref: '#/components/schemas/OrderLinePaymentReference'
+        orderLineReservations:
+          type: array
+          description: Array of all associated reservations
+          items:
+            $ref: '#/components/schemas/OrderLineReservation'
+        orderLineItemDetail:
+          $ref: '#/components/schemas/OrderLineItemDetail'
+        fulfillmentDates:
+          type: array
+          description: Promise Dates to Customer
+          items:
+            $ref: '#/components/schemas/FulfillmentDate'
+        lineStatusAudits:
+          type: array
+          description: Line Status Audit Array
+          items:
+            $ref: '#/components/schemas/StatusAudit'
+        itemVendor:
+          $ref: '#/components/schemas/ItemVendor'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      description: List of fulfillment Order Lines
+    ItemVendor:
+      type: object
+      properties:
+        thirdParty:
+          type: boolean
+          description: is this 3rd party item
+          example: true
+        sellerId:
+          type: string
+          description: if thirdParty is true fill
+          example: "1234566"
+        sellername:
+          type: string
+          description: if thirdParty is true fill
+          example: HnM
+    Party:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Customer ID / Supplier ID
+          format: uuid
+        type:
+          type: string
+          description: online-customer/supplier type of Buyer
+          example: online-customer/supplier
+        subType:
+          type: string
+          description: individual/company or organization
+          example: Herald
+        rating:
+          type: string
+          description: can be customer or party rating
+          example: "4"
+        cohort:
+          type: string
+          description: belongs to which cohort
+          example: HIGH_SPENDER
+        addresses:
+          type: array
+          description: Address array of different addressType like ShipTo/BillTo
+          items:
+            $ref: '#/components/schemas/Address'
+    Meta:
+      type: object
+      additionalProperties:
+        oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: object
+        - type: array
+      description: |
+        A flexible object to store any additional metadata.
+        Values can be strings, numbers, booleans, objects, or arrays.
+      example:
+        stringValue: Some text
+        numberValue: 12345
+        booleanValue: true
+        objectValue:
+          nestedKey: nested value
+        arrayValue:
+        - item1
+        - item2
+    StatusAudit:
+      type: object
+      properties:
+        status:
+          type: string
+          description: status
+          example: Created
+        code:
+          type: string
+          description: status
+          example: "5001"
+        reason:
+          type: string
+          description: Reason for Cancellation/Hold
+          example: Hold
+        quantity:
+          type: number
+          description: Quantity affected by status change
+          example: 5
+        date:
+          type: string
+          description: timestamp of status change
+          example: 2022-12-09T10:37:31.453+05:30
+        meta:
+          $ref: '#/components/schemas/Meta'
+      description: Line Status Audit
+    OrderPaymentMethod:
+      type: object
+      properties:
+        transactionReference:
+          type: string
+          description: Payment Transaction Reference
+          example: "10062313760561696000"
+        cardNo:
+          type: string
+          description: credit/debit card no
+          example: PSobhMhIDAEe6zj0PNvcNfiA
+        cardName:
+          type: string
+          description: name of the card
+          example: CARD
+        cardType:
+          type: string
+          description: type of card
+          example: debit card
+        customerPurchaseOrderNumber:
+          type: string
+          description: Customer Purchase Order Number
+          example: pay_a1b7fe63-80c0-11ee-b38f-351dfe10c883
+        paymentKey:
+          type: string
+          description: Unique ID from Refund Service
+        currency:
+          type: string
+          description: Currency
+          example: INR
+        paymentStatus:
+          type: string
+          description: Status of Payment
+          example: PAID
+        paymentType:
+          type: string
+          description: payment mode of the method
+          example: COD
+          xml:
+            attribute: true
+        collectedAmount:
+          type: integer
+          description: Collected Amount
+          xml:
+            attribute: true
+        pendingAmount:
+          type: integer
+          description: Amount to be collected from customer
+          xml:
+            attribute: true
+        redeemConversionRatio:
+          type: string
+          description: Redeem Conversion Ratio
+          example: "0"
+          xml:
+            attribute: true
+        pointsBurned:
+          type: string
+          description: Points Burned
+          example: "0"
+          xml:
+            attribute: true
+        meta:
+          $ref: '#/components/schemas/Meta'
+        paymentDetails:
+          type: array
+          description: Array of all order lines
+          items:
+            $ref: '#/components/schemas/PaymentDetail'
+    StatusUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+          description: unique identifier for status updates
+          example: 1234-123244
+        statusType:
+          type: string
+          description: Whether it is status update for Order/Shipment
+          example: ORDER
+          enum:
+          - ORDER
+          - SHIPMENT
+          - TRACKING
+        statusUpdatedDate:
+          type: string
+          description: time of status update
+          example: 2022-12-09T10:37:31.453+05:30
+        status:
+          type: string
+          description: status value
+          example: INVOICED
+          enum:
+          - CONFIRMED
+          - PACKED
+          - OUTFORDELIVERY
+          - DELIVERED
+          - RTOED
+        shipmentNo:
+          type: string
+          description: Mandatory if shipment updates
+          example: "10000345667"
+        trackingNo:
+          type: string
+          description: Mandatory if Tracking updates
+          example: "10000345667"
+        orderNo:
+          type: string
+          description: Mandatory if order number
+          example: FNA123456
+        lines:
+          type: array
+          description: Order Lines needs to be cancelled
+          items:
+            $ref: '#/components/schemas/CancellationOrderLine'
+      description: contract for updating shipment or order status in FRMS
+    GenericResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: some unique identifier (optional)
+          example: 12344-121212
+        status:
+          type: string
+          description: status of operation (optional)
+          example: success
+        href:
+          type: string
+          description: status of operation thru link for offline(optional)
+          example: http://somelink
+      description: for generic response
+    CancellationRequest:
+      type: object
+      properties:
+        requestId:
+          type: string
+          description: some unique identifier (optional)
+          example: 12344-121212
+        orderNo:
+          type: string
+          description: Mandatory if order number
+          example: FNA123456
+        orderType:
+          type: string
+          description: Order Type
+          example: FORWARD
+        shipmentNo:
+          type: string
+          description: Mandatory if shipment updates
+          example: "10000345667"
+        cancellationDate:
+          type: string
+          description: time of cancellation from upstream system
+          example: 2022-12-09T10:37:31.453+05:30
+        cancellationType:
+          type: string
+          description: cancellation type
+          example: BUSSINESS
+          enum:
+          - BUSSINESS
+          - CUSTOMER
+        orderLines:
+          type: array
+          description: Order Lines needs to be cancelled
+          items:
+            $ref: '#/components/schemas/CancellationOrderLine'
+      description: for cancelling the order lines
+    CancellationOrderLine:
+      type: object
+      properties:
+        primeLineNo:
+          type: string
+          description: Prime Line Number
+          example: "1"
+        itemId:
+          type: string
+          description: Item Identification Number
+          example: "123494343"
+        qty:
+          type: number
+          description: Current number of ordered items
+          example: 2
+        cancelledQty:
+          type: number
+          description: Number of items to be cancelled
+          example: 2
+        reasoncode:
+          type: string
+          description: reason codes (frms will not have any)
+          example: "112343"
+        reason:
+          type: string
+          description: reason for cancellation
+          example: backorder or item doesnt fit
+      description: for cancelling the order lines with reason
+    Shipment:
+      type: object
+      properties:
+        orderNo:
+          type: string
+          description: Order Number
+          example: FNA12345445
+        shipmentNo:
+          type: string
+          description: Shipment Number
+          example: "10000245566"
+        forwardShipmentNo:
+          type: string
+          description: Forward Shipment Number
+          example: "123494343"
+        externalShipmentNo:
+          type: string
+          description: External Shipment Number in case of Fynd
+          example: 1298u3129030291813413
+        shipmentCreatedDate:
+          type: string
+          description: shipment created date
+          example: date
+        fulfillmentType:
+          type: string
+          description: Fulfillment Type
+          example: FnL_SHIP
+        scac:
+          type: string
+          description: carrier code
+          example: DELHIVERY
+        carrierServiceCode:
+          type: string
+          description: carrier service code
+          example: SURFACE
+        freightTerms:
+          type: string
+          description: freight Terms
+          example: COD/NONCOD
+        amountToBeCollected:
+          type: number
+          description: amount to be collected
+          example: 104.53
+        trackingNo:
+          type: string
+          description: Tracking No or AWB Number
+          example: "10000245566"
+        trackingUrl:
+          type: string
+          description: Tracking url - Derived one
+          example: http://bit.ly/ABCSDD
+        forwardTrackingNo:
+          type: string
+          description: Forward AWB Number or tracking number
+          example: "1234556"
+        manifestNo:
+          type: string
+          description: manifest number
+          example: "12345555"
+        nodeId:
+          type: string
+          description: node ID
+          example: A027
+        nodeTaxPayerId:
+          type: string
+          description: node tax payer id
+          example: 05AAACA6460B2Z9
+        nodeType:
+          type: string
+          description: node type
+          example: STORE/DC
+        shipmentSource:
+          type: string
+          description: source of the shipment
+          example: CIS/HnM
+        status:
+          type: string
+          description: shipment status
+          example: SHIPPED
+          enum:
+          - PACKED
+          - SHIPPED
+          - DELIVERED
+          - RTOED
+        orderLines:
+          type: array
+          description: Shipment Order Lines
+          items:
+            $ref: '#/components/schemas/ShipmentLine'
+        invoice:
+          $ref: '#/components/schemas/Invoice'
+        meta:
+          $ref: '#/components/schemas/Meta'
+      description: creating shipment at order level
+    ShipmentLine:
+      type: object
+      properties:
+        primeLineNo:
+          type: string
+          description: prime line number
+          example: "1"
+        qty:
+          type: number
+          description: item line qty
+          example: 2
+        itemId:
+          type: string
+          description: ItemId
+          example: "1234566777"
+        shipmentCreatedDate:
+          type: string
+          description: shipment created date
+          example: 2022-10-18T15:30:39+05:30
+      description: creating shipment at order level
+    Invoice:
+      type: object
+      properties:
+        invoiceNo:
+          type: string
+          description: invoice number
+          example: INV12345667
+        invoiceAmount:
+          type: number
+          description: invoiced amount
+          example: 200.34
+        invoicedDate:
+          type: string
+          description: invoiced date
+          example: 2022-10-18T15:30:39+05:30
+        invoiceType:
+          type: string
+          description: type of invoice
+          example: SALES/CREDIT/DEBIT
+        invoiceURL:
+          type: string
+          description: url to fetch the invoice document
+          example: https://<host>/invoice/invoiceNum
+        shippingLableURL:
+          type: string
+          description: url to fetch the shipping label document
+          example: https://<host>/shiplabel/invoiceNum
+        paymentType:
+          type: string
+          description: mode of payment
+          example: COD
+      description: basic invoice details
+    PaymentDetail:
+      type: object
+      properties:
+        transactionStatus:
+          type: string
+          description: payment transaction status
+          example: CONFIRMED
+        amount:
+          type: string
+          description: payment/request amount
+          example: "100.50"
+        processedAmount:
+          type: string
+          description: processed amount
+          example: "100.50"
+        tranRequestTime:
+          type: string
+          description: Transaction Request time
+          example: 2023-05-17T11:19:38.209528
+        chargeType:
+          type: string
+          description: Charge type
+          example: chargeType
+        txnType:
+          type: string
+          description: Transaction type
+          example: WA
+        subMerchantJioTxnRefNo:
+          type: string
+          description: Sub Merchant Jio Txn Reference
+          example: "0"
+        responseMessage:
+          type: string
+          description: Response Message
+          example: APPROVED
+    Orders:
+      type: array
+      description: Array of all orders with basic details
+      items:
+        $ref: '#/components/schemas/Order'
+    commonloginservice_login_body:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      example:
+        username: dms_user
+        password: ASKDH%1212
+    Address_location:
+      type: object
+      properties:
+        latitude:
+          type: string
+          description: Latitude
+          example: "21.09"
+        longitude:
+          type: string
+          description: Longitude
+          example: "34.56"
+  parameters:
+    tenant:
+      name: tenantId
+      in: header
+      description: tenantId
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: AJIO
+    source:
+      name: source
+      in: header
+      description: source system
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: FS
+    destination:
+      name: destination
+      in: header
+      description: destination system
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: fulfillment-service
+    operation:
+      name: operation
+      in: header
+      description: type of operation/command
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: shipmentRequest
+    type:
+      name: type
+      in: header
+      description: additional optional information for opertation
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: DC
+    version:
+      name: version
+      in: header
+      description: version of payload
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: v1
+    sentAt:
+      name: sent-at
+      in: header
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+        description: Date and time when the message was sent.
+        example: 2022-10-13T15:49:18+05:30
+    reqId:
+      name: request-id
+      in: header
+      description: any unique request id
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: some-uuid
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /common-login-service/login
+          tokenUrl: /common-login-service/login
+          scopes:
+            read: Grants read access
