@@ -1,0 +1,406 @@
+openapi: 3.0.3
+info:
+  title: SCM Domain APIs - OpenAPI 3.0
+  description: |-
+    This is a high level api for the creating and managing inventory/node/items for SCM.
+    Some useful links:
+    - [SCM git repository](https://github.com/swagger-api/swagger-petstore)
+    - [Sharepoint URL](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: "1.0"
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://virtserver.swaggerhub.com/SAGARPRASADGCP/SCMApi/1.0
+  description: SwaggerHub API Auto Mocking
+- url: https://api.jioscm-uat.jio.com
+- url: https://api.jioscm-rep.jio.com
+tags:
+- name: SCMAPI
+  description: SCM Domain APIs
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+paths:
+  /gateway/v1/inventory:
+    get:
+      tags:
+      - Inventory
+      summary: get inventory details
+      description: Get the inventory for a tenant
+      operationId: getInventory
+      parameters:
+      - name: itemIds
+        in: query
+        description: Comma Separated Item IDs
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: "460417226001,460407276001"
+      - name: nodeId
+        in: query
+        description: nodeId
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: DV00331797
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIOB2C
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: "{\"status\":\"Success\",\"response\":[{\"itemId\":\"460417226001\"\
+                    ,\"nodeId\":\"DV00331797\",\"quantity\":12,\"productClass\":\"\
+                    GOOD\",\"unitOfMeasure\":\"EACH\",\"supplyType\":\"ONHAND\",\"\
+                    mrp\":123.12,\"expiry\":\"2016-08-29T09:12:33.001Z\",\"countryOfOrigin\"\
+                    :\"93\",\"snapshotTime\":\"2016-08-29T09:12:33.001Z\",\"reason\"\
+                    :\"inward happen\",\"batchProduct\":true,\"commercialType\":\"\
+                    \"},{\"itemId\":\"12345678\",\"nodeId\":\"DV00331797\",\"quantity\"\
+                    :12,\"productClass\":\"GOOD\",\"unitOfMeasure\":\"EACH\",\"supplyType\"\
+                    :\"ONHAND\",\"mrp\":123.12,\"expiry\":\"2016-08-29T09:12:33.001Z\"\
+                    ,\"countryOfOrigin\":\"93\",\"snapshotTime\":\"2016-08-29T09:12:33.001Z\"\
+                    ,\"reason\":\"inward happen\",\"batchProduct\":true,\"commercialType\"\
+                    :\"\"}]}"
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /gateway/v1/nodes:
+    get:
+      tags:
+      - Node
+      summary: get node details
+      description: Get the node for a tenant
+      operationId: getNode
+      parameters:
+      - name: nodeIds
+        in: query
+        description: Comma Separated Node IDs
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: "V027,A02C"
+      - name: compact
+        in: query
+        description: compact response
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+        example: true
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIOB2C
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      responses:
+        "200":
+          description: List of Node Details
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "{\"status\":\"Success\",\"response\":[{\"id\":\"660a941a98108304b84c70ea\"\
+                  ,\"nodeId\":\"A02C\",\"tenantId\":\"AJIO\",\"nodeName\":\"A02C\"\
+                  ,\"nodeType\":\"DC\",\"addresses\":[{\"addressLine1\":\"Building\
+                  \ No B 1000\",\"addressLine2\":\"Nandihalli village 55th Km\",\"\
+                  addressLine3\":\"Oordigree Hobli Taluka\",\"addressLine4\":\"\"\
+                  ,\"addressLine5\":\"\",\"city\":\"Tumkur\",\"stateCode\":\"KAR\"\
+                  ,\"country\":\"INDIA\",\"latitude\":28.607111,\"longitude\":76.65691,\"\
+                  pinCode\":562123,\"emailId\":\"shipper@reliance.com\",\"phoneNumber1\"\
+                  :\"8892959048\",\"phoneNumber2\":\"1234567890\",\"addressType\"\
+                  :\"SHIPPED_TO\"},{\"addressLine1\":\"Building No B 1000\",\"addressLine2\"\
+                  :\"Nandihalli village 55th Km\",\"addressLine3\":\"Oordigree Hobli\
+                  \ Taluka\",\"addressLine4\":\"\",\"addressLine5\":\"\",\"city\"\
+                  :\"Tumkur\",\"stateCode\":\"KAR\",\"country\":\"INDIA\",\"latitude\"\
+                  :28.607111,\"longitude\":76.65691,\"pinCode\":562123,\"emailId\"\
+                  :\"shipper@reliance.com\",\"phoneNumber1\":\"8892959048\",\"phoneNumber2\"\
+                  :\"1234567890\",\"addressType\":\"BILLED_TO\"}],\"contactDetails\"\
+                  :[{\"firstName\":\"Suresh\",\"emailId\":\"store2@gmail.com\",\"\
+                  phoneNumber1\":\"65655645455\",\"contactType\":\"STORE_MANAGER\"\
+                  },{\"firstName\":\"Ramesh\",\"emailId\":\"store@ril.com\",\"phoneNumber1\"\
+                  :\"767576645565\",\"contactType\":\"CLUSTER_MANAGER\"}],\"gstin\"\
+                  :\"06AAACR5055K1ZB\",\"nodeBusiness\":\"AJIO\",\"priority\":3,\"\
+                  updatedAt\":\"2024-08-04T19:12:14\",\"updatedBy\":\"WorkBench\"\
+                  ,\"cluster\":{\"clusterName\":\"\"},\"zone\":\"East\",\"launchDate\"\
+                  :\"2019-12-22\",\"fyndId\":\"32\",\"forwardTransactionCode\":\"\
+                  1012\",\"returnTransactionCode\":\"1067\",\"deliveryBasedModelFlag\"\
+                  :true},{\"id\":\"658d04adb432b139cfa96fa6\",\"nodeId\":\"V027\"\
+                  ,\"tenantId\":\"AJIO\",\"nodeName\":\"V027\",\"nodeType\":\"DC\"\
+                  ,\"addresses\":[{\"addressLine1\":\"Survey No. 54/1\",\"addressLine2\"\
+                  :\"Nandihalli village 55th Km stone NH-4 Tumkur road\",\"addressLine3\"\
+                  :\"Oordigree Hobli Taluka\",\"addressLine4\":\"\",\"addressLine5\"\
+                  :\"\",\"addressLine6\":\"\",\"city\":\"Tumkur\",\"state\":\"KAR\"\
+                  ,\"country\":\"IN\",\"latitude\":13.26404,\"longitude\":77.20935,\"\
+                  pinCode\":572101,\"emailId\":\"abc@ril.com\",\"phoneNumber1\":\"\
+                  1234567890\",\"phoneNumber2\":\"9876543201\",\"addressType\":\"\
+                  SHIPPED_TO\"},{\"addressLine1\":\"Survey No. 54/1\",\"addressLine2\"\
+                  :\"Nandihalli village 55th Km stone NH-4 Tumkur road\",\"addressLine3\"\
+                  :\"Oordigree Hobli Taluka\",\"addressLine4\":\"\",\"addressLine5\"\
+                  :\"\",\"addressLine6\":\"\",\"city\":\"Tumkur\",\"state\":\"KAR\"\
+                  ,\"country\":\"IN\",\"pinCode\":572101,\"emailId\":\"abc@ril.com\"\
+                  ,\"phoneNumber1\":\"1234567890\",\"phoneNumber2\":\"9876543201\"\
+                  ,\"addressType\":\"CORPORATE\"},{\"addressLine1\":\"Survey No. 54/1\"\
+                  ,\"addressLine2\":\"Nandihalli village 55th Km stone NH-4 Tumkur\
+                  \ road\",\"addressLine3\":\"Oordigree Hobli Taluka\",\"addressLine4\"\
+                  :\"\",\"addressLine5\":\"\",\"addressLine6\":\"\",\"city\":\"Tumkur\"\
+                  ,\"state\":\"KAR\",\"country\":\"IN\",\"pinCode\":572101,\"emailId\"\
+                  :\"abc@ril.com\",\"phoneNumber1\":\"1234567890\",\"phoneNumber2\"\
+                  :\"9876543201\",\"addressType\":\"CONTACT\"},{\"addressLine1\":\"\
+                  C/O Survey No. 54/1,\",\"addressLine2\":\"Nandihalli village 55th\
+                  \ Km stone\",\"addressLine3\":\"NH-4 Tumkur road, Oordigree\",\"\
+                  addressLine4\":\"Hobli Taluka\",\"addressLine5\":\"\",\"addressLine6\"\
+                  :\"\",\"city\":\"Tumkur\",\"state\":\"KAR\",\"country\":\"IN\",\"\
+                  pinCode\":572105,\"emailId\":\"\",\"phoneNumber1\":\"\",\"phoneNumber2\"\
+                  :\"\",\"addressType\":\"BILLED_TO\"}],\"gstin\":\"29AABCR1718E1ZL\"\
+                  ,\"nodeBusiness\":\"AJIO DC\",\"updatedAt\":\"2024-05-07T13:36:54\"\
+                  ,\"updatedBy\":\"VMSFullSyncExcel\",\"launchDate\":\"2016-02-15\"\
+                  ,\"hobId\":\"RIL\",\"fyndId\":\"39\"}]}"
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /gateway/v1/items:
+    get:
+      tags:
+      - Item
+      summary: get item details
+      description: Get the node for a tenant
+      operationId: getItems
+      parameters:
+      - name: itemIds
+        in: query
+        description: Comma Separated Item IDs
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+        example: "460417226001,460407276001"
+      - name: compact
+        in: query
+        description: compact response
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: boolean
+        example: true
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIOB2C
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      responses:
+        "200":
+          description: List of Node Details
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "{\"status\":\"Success\",\"response\":[{\"id\":\"80c40f9b-e0c6-4f1b-b8b6-6377557743fc\"\
+                  ,\"skuId\":\"460407276001\",\"tenantId\":\"AJIO\",\"createdTime\"\
+                  :\"2024-08-07T10:48:44\",\"createdBy\":\"catalog-full-push\",\"\
+                  lastModifiedTime\":\"2024-08-07T10:48:44\",\"modifiedBy\":\"catalog-full-push\"\
+                  ,\"optionCode\":\"460407276_amber\",\"status\":\"APPROVED\",\"commercialType\"\
+                  :\"X\",\"catalog\":\"luxuryProductCatalog\",\"color\":\"AMBER\"\
+                  ,\"goLive\":1634726002552,\"brandData\":{\"brandName\":\"RAYMOND\"\
+                  ,\"brandCode\":\"raymond\",\"brandType\":\"2\"},\"unitHeight\":\"\
+                  5.59\",\"unitLength\":\"22.56\",\"unitWidth\":\"19.8\",\"unitWeight\"\
+                  :\"0.42\",\"unitDimensionUom\":\"CM\",\"unitWeightUom\":\"KG\",\"\
+                  size\":\"S\",\"standardSize\":\"S\",\"ean\":\"2050000477447\",\"\
+                  mrp\":100.0,\"countryOfOrigin\":\"Switzerland\",\"originCategoryData\"\
+                  :{\"name\":\"D2CFashion\",\"value\":\"83\",\"level\":0,\"levelName\"\
+                  :\"ORIGIN\"},\"segmentCategoryData\":{\"name\":\"Women\",\"value\"\
+                  :\"8303\",\"level\":1,\"levelName\":\"SEGMENT\"},\"verticalCategoryData\"\
+                  :{\"name\":\"Fusion Wear\",\"value\":\"830309\",\"level\":2,\"levelName\"\
+                  :\"VERTICAL\"},\"brickCategoryData\":{\"name\":\"Pants\",\"value\"\
+                  :\"830309002\",\"level\":3,\"levelName\":\"BRICK\"},\"fashionGrade\"\
+                  :\"0002\",\"isExchangeable\":\"false\",\"netQuantity\":\"4 N\",\"\
+                  hsnCode\":\"6104\",\"componentCount\":\"1\",\"isReturnable\":\"\
+                  true\",\"returnWindow\":\"10\",\"isCodDisabled\":\"false\",\"taxCode\"\
+                  :\"ZV\",\"title\":\"Park men jeans amber m\",\"season\":\"CSSU\"\
+                  ,\"seasonYear\":2021,\"ajioSeasonCode\":\"SS\",\"imageURLList\"\
+                  :[{\"format\":\"60Wx75H\",\"url\":\"https://assets-uat.ajio.ril.com/medias/sys_master/root/20211230/160749/61cd8bfd861d376bad8e4fa1/-60Wx75H-460407276-amber-MODEL.jpg\"\
+                  },{\"format\":\"473Wx593H\",\"url\":\"https://assets-uat.ajio.ril.com/medias/sys_master/root/20211230/160749/61cd8bfd861d376bad8e4f9f/-473Wx593H-460407276-amber-MODEL.jpg\"\
+                  }]},{\"id\":\"40e7db1b-e46f-4631-878e-032d152ce353\",\"skuId\":\"\
+                  460417226001\",\"tenantId\":\"AJIO\",\"createdTime\":\"2024-01-09T14:23:32\"\
+                  ,\"createdBy\":\"catalog-delta-sync\",\"lastModifiedTime\":\"2024-06-18T18:18:09\"\
+                  ,\"modifiedBy\":\"item-attribute-upload\",\"optionCode\":\"460417226_blue\"\
+                  ,\"status\":\"APPROVED\",\"commercialType\":\"J\",\"catalog\":\"\
+                  rilfnlProductCatalog\",\"color\":\"Blue\",\"goLive\":1663911826000,\"\
+                  brandData\":{\"brandName\":\"adidas\",\"brandCode\":\"adidas\",\"\
+                  brandType\":\"test\"},\"unitHeight\":\"6.0\",\"unitLength\":\"23.72\"\
+                  ,\"unitWidth\":\"20.65\",\"unitWeight\":\"0.49\",\"unitDimensionUom\"\
+                  :\"CM\",\"unitWeightUom\":\"KG\",\"size\":\"S\",\"standardSize\"\
+                  :\"S\",\"ean\":\"ASEP2283\",\"mrp\":899.0,\"originCategoryData\"\
+                  :{\"name\":\"D2CFashion\",\"value\":\"83\",\"level\":0,\"levelName\"\
+                  :\"ORIGIN\"},\"segmentCategoryData\":{\"name\":\"Men\",\"value\"\
+                  :\"8302\",\"level\":1,\"levelName\":\"SEGMENT\"},\"verticalCategoryData\"\
+                  :{\"name\":\"Western Wear\",\"value\":\"830216\",\"level\":2,\"\
+                  levelName\":\"VERTICAL\"},\"brickCategoryData\":{\"name\":\"Tshirts\"\
+                  ,\"value\":\"830216014\",\"level\":3,\"levelName\":\"BRICK\"},\"\
+                  netQuantity\":\"1\",\"hsnCode\":\"50072010\",\"componentCount\"\
+                  :\"1\",\"isCodDisabled\":\"false\",\"existingItemAttributeMap\"\
+                  :{\"itemSupportMultipleCommercialType\":\"true\",\"multipleCommercialType\"\
+                  :\"false\",\"itemFoc\":\"true\",\"mrpUpdateMapping\":\"567945780578088\"\
+                  }}]}"
+      security:
+      - OAuth2:
+        - read the token from auth service
+  /gateway/v1/events:
+    post:
+      tags:
+      - Event
+      summary: publish any event
+      description: Post any event to the Platform Gateway Event should be pre-registered
+        and Subscriber should be there
+      operationId: postEvent
+      parameters:
+      - name: eventType
+        in: header
+        description: Event Name which is registered in gateway
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: CREATE_ORDER
+      - name: overrideheaders
+        in: header
+        description: any headers to be passed to event
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example:
+          A: B
+          someflag: true
+      - name: tenantId
+        in: header
+        description: tenantId
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIOB2C
+      - name: version
+        in: header
+        description: version of payload
+        required: false
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: v1
+      responses:
+        "201":
+          description: Event Request is accepted
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "{\"eventId\":\"some-uuid\"}"
+        "400":
+          description: Error in publishing event
+          content:
+            applicaton/json:
+              schema:
+                type: string
+                example: "{\"error\":\"Error Message\"}"
+      security:
+      - OAuth2:
+        - read the token from auth service
+components:
+  schemas: {}
+  parameters:
+    tenant:
+      name: tenantId
+      in: header
+      description: tenantId
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: AJIOB2C
+    version:
+      name: version
+      in: header
+      description: version of payload
+      required: false
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: v1
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /common-login-service/login
+          tokenUrl: /common-login-service/login
+          scopes:
+            read: Grants read access
