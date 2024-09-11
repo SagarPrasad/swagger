@@ -2473,6 +2473,10 @@ components:
           type: string
           description: Mandatory if Tracking updates
           example: "10000345667"
+        manifestNo:
+          type: string
+          description: Used in shipped updates
+          example: "7645398669"
         orderNo:
           type: string
           description: Mandatory if order number
@@ -2536,6 +2540,10 @@ components:
             $ref: '#/components/schemas/CancellationOrderLine'
       description: for cancelling the order lines
     CancellationOrderLine:
+      required:
+      - itemId
+      - primeLineNo
+      - qty
       type: object
       properties:
         primeLineNo:
@@ -2548,7 +2556,7 @@ components:
           example: "123494343"
         qty:
           type: number
-          description: Current number of ordered items
+          description: Quantity Left after Cancellation
           example: 2
         cancelledQty:
           type: number
