@@ -307,71 +307,208 @@ paths:
       security:
       - OAuth2:
         - read the token from auth service
-  /gateway/v1/events:
+  /gateway/v1/publish-event:
     post:
       tags:
-      - Event
-      summary: publish any event
-      description: Post any event to the Platform Gateway Event should be pre-registered
-        and Subscriber should be there
-      operationId: postEvent
+      - Gateway Controller
+      summary: Publish a event
+      description: Publishes Event based on the event type.
+      operationId: publishEvent
       parameters:
-      - name: eventType
+      - name: event-type
         in: header
-        description: Event Name which is registered in gateway
+        description: Event Type
         required: true
         style: simple
         explode: false
         schema:
           type: string
-        example: CREATE_ORDER
-      - name: overrideheaders
-        in: header
-        description: any headers to be passed to event
-        required: false
-        style: simple
-        explode: false
-        schema:
-          type: string
-        example:
-          A: B
-          someflag: true
+        example: FRMS_ORDER_CREATE
       - name: tenantId
         in: header
-        description: tenantId
+        description: Tenant ID
         required: true
         style: simple
         explode: false
         schema:
           type: string
         example: AJIOB2C
-      - name: version
+      - name: additional-headers
         in: header
-        description: version of payload
+        description: Additional Headers
         required: false
         style: simple
         explode: false
         schema:
           type: string
-        example: v1
+        example:
+          requestId: 021bb2dd667a3ed8baf3e2a9e442811b
+          orderNum: ORDER123123
+      requestBody:
+        description: Payload for the message
+        content:
+          application/json:
+            schema:
+              type: string
+            example: "{\"stringField\":\"Hello, world!\",\"numberField\":12345,\"\
+              booleanField\":true,\"arrayField\":[1,\"two\",false,null,{\"nestedObject\"\
+              :\"value\"}],\"objectField\":{\"nestedString\":\"Nested Hello\",\"nestedNumber\"\
+              :67890,\"nestedBoolean\":false,\"nestedArray\":[5,6,7],\"nestedObject\"\
+              :{\"deepNestedField\":\"Deep value\"}}}"
       responses:
-        "201":
-          description: Event Request is accepted
-          content:
-            application/json:
-              schema:
-                type: string
-                example: "{\"eventId\":\"some-uuid\"}"
         "400":
-          description: Error in publishing event
+          description: Unauthorized
           content:
-            applicaton/json:
+            '*/*':
               schema:
                 type: string
-                example: "{\"error\":\"Error Message\"}"
-      security:
-      - OAuth2:
-        - read the token from auth service
+              examples:
+                Event Type is not registered for this tenant:
+                  summary: Event Not Registered
+                  description: Event Type is not registered for this tenant
+                  value:
+                    traceId: e6fb08327ddb88b0ecac3dd63c661989
+                    spanId: 70fe4293a3d6e9fb
+                    errorMessage: "Event is not registered :: HYBRIS_FRMS_ORDER_CREATE"
+                    errorCode: PLTGW001
+                    timestamp: 2024-09-20T13:03:06.940486
+                    errorDetails: "java.lang.IllegalArgumentException: Event is not\
+                      \ registered :: HYBRIS_FRMS_ORDER_CREATE"
+        "200":
+          description: Message sent successfully
+          content:
+            '*/*':
+              schema:
+                type: string
+              examples:
+                Success Response:
+                  summary: Success
+                  description: Success Response
+                  value:
+                    traceId: 84f071cf51b60da38399c0d67e7cda9f
+                    spanId: 7ace92d071b1d51c
+                    headers: "{requestId=021bb2dd667a3ed8baf3e2a9e442811b}"
+                    published: "true"
+                    status: SUCCESS
+                    timestamp: 2024-09-19T08:16:53.031610
+  /gateway/v1/message:
+    post:
+      tags:
+      - Gateway Controller
+      summary: Send a message
+      description: Sends a message to the Kafka topic with the specified headers.
+      operationId: sendMessage
+      parameters:
+      - name: binding-name
+        in: header
+        description: Message's Binding Name
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: createOrder
+      - name: tenantId
+        in: header
+        description: Tenant ID
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: AJIOB2C
+      - name: auth-key
+        in: header
+        description: Auth Key
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: 43cc720-a41e-4a30-beac-7c561743dd63
+      requestBody:
+        description: Payload for the message
+        content:
+          application/json:
+            schema:
+              type: string
+            example: "{\"stringField\":\"Hello, world!\",\"numberField\":12345,\"\
+              booleanField\":true,\"arrayField\":[1,\"two\",false,null,{\"nestedObject\"\
+              :\"value\"}],\"objectField\":{\"nestedString\":\"Nested Hello\",\"nestedNumber\"\
+              :67890,\"nestedBoolean\":false,\"nestedArray\":[5,6,7],\"nestedObject\"\
+              :{\"deepNestedField\":\"Deep value\"}}}"
+        required: true
+      responses:
+        "401":
+          description: Unauthorized
+          content:
+            '*/*':
+              schema:
+                type: string
+              examples:
+                Invalid Tenant / Auth Key:
+                  summary: Unauthorized
+                  description: Invalid Tenant / Auth Key
+                  value:
+                    traceId: d2ecd4fa346b44c23364a78850320906
+                    spanId: a2dfc824b711e030
+                    errorMessage: Unauthorized
+                    errorCode: PLTGW001
+                    timestamp: 2024-09-20T11:56:42.987172
+                    errorDetails: "com.ril.scm.herald.platform.gw.exception.BadRequestException:\
+                      \ Unauthorized"
+        "200":
+          description: Message sent successfully
+          content:
+            '*/*':
+              schema:
+                type: string
+              examples:
+                Success Response:
+                  summary: Success
+                  description: Success Response
+                  value:
+                    traceId: 84f071cf51b60da38399c0d67e7cda9f
+                    spanId: 7ace92d071b1d51c
+                    headers: "{content-length=542, event-type=MessageEvent, postman-token=a57d5c34-6031-4ef2-af63-c7fd17b309d8,\
+                      \ orderNum=ORDER123123, binding-name=jio.scm.test.frms.order.create.in,\
+                      \ eventType=414, partition-key=ORDER123123, source=SOURCESYSTEM,\
+                      \ accept=*/*, tenantid=AJIOB2C, host=localhost:8090, tenantId=AJIOB2C,\
+                      \ content-type=application/json, connection=keep-alive, cache-control=no-cache,\
+                      \ event-id=43cc720-a41e-4a30-beac-7c561743dd63, accept-encoding=gzip,\
+                      \ deflate, br, user-agent=PostmanRuntime/7.42.0}"
+                    published: "true"
+                    status: SUCCESS
+                    timestamp: 2024-09-19T08:16:53.031610
+        "400":
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                type: string
+              examples:
+                No Binding Name Header:
+                  summary: Header binding-name was not provided
+                  description: No Binding Name Header
+                  value:
+                    traceId: 74cea4501012389cc66a0f9b0b9b43ad
+                    spanId: 80b54d41fbd7f0df
+                    errorMessage: "Please provide a valid value for header key: binding-name"
+                    errorCode: PLTGW001
+                    timestamp: 2024-09-20T12:19:20.360384
+                    errorDetails: "com.ril.scm.herald.platform.gw.exception.BadRequestException:\
+                      \ Please provide a valid value for header key: binding-name"
+                Invalid Additional Headers:
+                  summary: Additional Headers Parsing Failed
+                  description: Invalid Additional Headers
+                  value:
+                    traceId: 6dafab8979f9a44837f42b21b5843270
+                    spanId: 30cfe558575d47d1
+                    errorMessage: "Failed to parse: additional-headers"
+                    errorCode: PLTGW001
+                    timestamp: 2024-09-19T08:29:31.533801
+                    errorDetails: "com.ril.scm.herald.platform.gw.exception.BadRequestException:\
+                      \ Failed to parse: additional-headers"
 components:
   schemas: {}
   parameters:
